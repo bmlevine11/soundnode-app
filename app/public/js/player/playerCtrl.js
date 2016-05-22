@@ -131,7 +131,35 @@ app.controller('PlayerCtrl', function (
         }
     };
 
-    // Listen for updates from other scopes about favorites and unfavorites
+    $scope.repost = function($event) {
+        var track = queueService.getTrack()
+
+        if ( $event.currentTarget.classList.contains('active') ) {
+            SCapiService.deleteRepost(track.songId)
+                .then(function(status) {
+                    if ( typeof status == "object" ) {
+                        notificationFactory.success("Song removed from reposts!");
+                        $event.currentTarget.classList.remove('active');
+                        $rootScope.$broadcast("track::unreposted", track.songId);
+                    }
+                }, function() {
+                    notificationFactory.error("Something went wrong!");
+                })
+            } else {
+                SCapiService.createRepost(track.songId)
+                    .then(function(status) {
+                        if (typeof status == "object" ) {
+                            notificationFactory.success("Song added to reposts!");
+                            $event.currentTarget.classList.add('active');
+                            $rootScope.$broadcast("track::reposted", track.songId);
+                        }
+                    }, function(status) {
+                        notificationFactory.error("Something went wrong!");
+                    });
+        }
+    };
+
+    // Listen for updates from other scopes about favorites and reposts
     $scope.$on('track::favorited', function(event, trackId) {
         var track = queueService.getTrack();
         if ( track && trackId == track.songId ) {
@@ -144,6 +172,20 @@ app.controller('PlayerCtrl', function (
         if ( track && trackId == track.songId ) {
             var elFavorite = document.querySelector('.player_favorite');
             elFavorite.classList.remove('active');
+        }
+    });
+    $scope.$on('track::reposted', function(event, trackId) {
+        var track = queueService.getTrack();
+        if ( track && trackId == track.songId ) {
+            var elRepost = document.querySelector('.player_repost');
+            elRepost.classList.add('active');
+        }
+    });
+    $scope.$on('track::unreposted', function(event, trackId) {
+        var track = queueService.getTrack();
+        if ( track && trackId == track.songId ) {
+            var elRepost = document.querySelector('.player_repost');
+            elRepost.classList.remove('active');
         }
     });
 

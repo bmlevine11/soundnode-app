@@ -152,6 +152,21 @@
     }
 }
 
+.player_repost {
+    margin: 0 0 0 10px;
+
+    .fa {
+        color: #949599;
+        font-size: 12px;
+    }
+
+    &.active {
+        .fa {
+            color: #f50;
+        }
+    }
+}
+
 .player_progress {
     position: absolute;
     top: -20px;

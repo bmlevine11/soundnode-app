@@ -62,6 +62,7 @@ app.factory('playerService', function(
     player.elPlayerDuration = document.getElementById('player-duration');
     player.elPlayerTimeCurrent = document.getElementById('player-timecurrent');
     player.elPlayerFavorite = angular.element( document.querySelector('.player_favorite') );
+    player.elPlayerRepost = angular.element( document.querySelector('.player_repost') );
     player.elThumb = document.getElementById('playerThumb');
     player.elTitle = document.getElementById('playerTitle');
     player.elUser = document.getElementById('playerUser');
@@ -175,6 +176,15 @@ app.factory('playerService', function(
             }
         });
 
+        // Similarly, make sure the repost icon is active if a song was reposted
+        var repost = this.elPlayerRepost;
+        utilsService.updateTracksReposts([trackObj], true)
+        .then(function() {
+            if ( trackObj.user_reposted ) {
+                repost.addClass('active');
+            }
+        });
+
         $rootScope.isSongPlaying = true;
         $rootScope.$broadcast('activateQueue');
 
@@ -189,6 +199,14 @@ app.factory('playerService', function(
     });
     $rootScope.$on('track::unfavorited', function(event, trackId) {
         utilsService.removeCachedFavorite(trackId);
+    });
+
+    // Update cache when reposting or unreposting so future checks are correct
+    $rootScope.$on('track::reposted', function(event, trackId) {
+        utilsService.addCachedRepost(trackId);
+    });
+    $rootScope.$on('track::unreposted', function(event, trackId) {
+        utilsService.removeCachedRepost(trackId);
     });
 
     /**

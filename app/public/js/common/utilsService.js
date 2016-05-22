@@ -162,6 +162,34 @@ app.factory('utilsService', function(
     }
 
     /**
+     * When manipulating reposts after a page is loaded, it's 
+     * necessary to manipulate the repostsIds cache like above. 
+     * Used to sync the reposts between player and everything else
+     * @param  {number or string} id - the song id to add to reposts
+     */
+    Utils.addCachedRepost = function(id) {
+        id = parseInt(id);
+        var index = Utils.repostsIds.indexOf(id);
+        if (index == -1) {
+            Utils.repostsIds.push(id);
+        } 
+    }
+
+    /**
+     * When manipulating reposts after a page is loaded, it's 
+     * necessary to manipulate the repostsIds cache like above. 
+     * Used to sync the reposts between player and everything else
+     * @param  {number or string} id - the song id to remove from reposts
+     */
+    Utils.removeCachedRepost = function(id) {
+        id = parseInt(id);
+        var index = Utils.repostsIds.indexOf(id);
+        if (index > -1) {
+            Utils.repostsIds.splice(index, 1);
+        } 
+    }
+
+    /**
      * Fetch ids of reposted tracks and apply them to existing collection
      * @param  {array} collection - stream collection or tracks array
      * @param  {boolean} fromCache  - if should make request to API

@@ -23,6 +23,7 @@ app.directive('repostedSong', function (
                             if (angular.isObject(status)) {
                                 notificationFactory.success('Song removed from reposts!');
                                 $scope.reposted = false;
+                                $rootScope.$broadcast("track::unreposted", songId);
                             }
                         })
                         .catch(function () {
@@ -36,6 +37,7 @@ app.directive('repostedSong', function (
                             if (angular.isObject(status)) {
                                 notificationFactory.success('Song added to reposts!');
                                 $scope.reposted = true;
+                                $rootScope.$broadcast("track::reposted", songId);
                             }
                         })
                         .catch(function () {

@@ -104,6 +104,7 @@ app.controller('QueueCtrl', function(
                 if (angular.isObject(status)) {
                     notificationFactory.success('Song added to reposts!');
                     utilsService.markTrackAsReposted(songId);
+                    $rootScope.$broadcast("track::reposted", songId);
                 }
             })
             .catch(function (status) {
